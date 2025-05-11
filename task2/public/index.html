@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Express Toggle Tabs</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .tab-content { display: none; margin-top: 20px; }
+    .active { display: block; }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    .body{
+        background-color: aqua;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Welcome to My Express App</h1>
+  <button onclick="showTab('home')">Home</button>
+  <button onclick="showTab('about')">About</button>
+
+  <div id="home" class="tab-content active">
+    <h2>Home Page</h2>
+    <p>This is the Home page content.</p>
+  </div>
+
+  <div id="about" class="tab-content">
+    <h2>About Page</h2>
+    <p>This is the About page content.</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

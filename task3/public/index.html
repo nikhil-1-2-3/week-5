@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ToDo App</title>
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+
+  body {
+    background: linear-gradient(to right, #8360c3, #2ebf91);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    padding: 50px 20px;
+    color: #fff;
+  }
+
+  .todo-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px 30px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 520px;
+    backdrop-filter: blur(15px);
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  h1 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #fff;
+    letter-spacing: 1.5px;
+    text-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  }
+
+  .input-group {
+    display: flex;
+    gap: 10px;
+    position: relative;
+    margin-bottom: 30px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    padding: 15px 20px 15px 45px;
+    font-size: 16px;
+    border-radius: 14px;
+    border: none;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    color: #222;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  input[type="text"]::placeholder {
+    color: #666;
+    font-style: italic;
+  }
+
+  input[type="text"]:focus {
+    background: rgba(255, 255, 255, 0.5);
+    outline: none;
+    border: 2px solid #fff;
+    box-shadow: 0 0 12px rgba(255,255,255,0.6);
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #444;
+  }
+
+  button {
+    padding: 15px 22px;
+    background: linear-gradient(to right, #00f260, #0575e6);
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  button:hover {
+    transform: scale(1.06);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  ul {
+    list-style-type: none;
+    margin-top: 20px;
+  }
+
+  li {
+    background: rgba(255, 255, 255, 0.2);
+    margin-bottom: 14px;
+    padding: 15px 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease, transform 0.3s;
+    color: #fff;
+  }
+
+  li:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateX(6px);
+  }
+
+  .delete-btn {
+    background: none;
+    border: none;
+    color: #ff5c5c;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .delete-btn:hover {
+    transform: scale(1.2);
+    color: #ff1e56;
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+  
+</head>
+<body>
+  <h1>My ToDo List</h1>
+  <div class="todo-container">
+  <h1>My ToDo List</h1>
+  <div class="input-group">
+    <span class="input-icon">📝</span>
+    <input id="taskInput" type="text" placeholder="Add a new task..." />
+    <button onclick="addTodo()">Add</button>
+  </div>
+  <ul id="todoList"></ul>
+</div>
+
+  <button onclick="addTodo()">Add</button>
+  <ul id="todoList"></ul>
+
+  <script>
+    const apiUrl = '/todos';
+
+    async function fetchTodos() {
+      const res = await fetch(apiUrl);
+      const todos = await res.json();
+      const list = document.getElementById('todoList');
+      list.innerHTML = '';
+      todos.forEach(todo => {
+        const li = document.createElement('li');
+        li.innerText = todo.task;
+        const del = document.createElement('button');
+        del.innerText = '❌';
+        del.onclick = () => deleteTodo(todo.id);
+        li.appendChild(del);
+        list.appendChild(li);
+      });
+    }
+
+    async function addTodo() {
+      const taskInput = document.getElementById('taskInput');
+      const task = taskInput.value.trim();
+      if (!task) return;
+
+      await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task }),
+      });
+
+      taskInput.value = '';
+      fetchTodos();
+    }
+
+    async function deleteTodo(id) {
+      await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+      fetchTodos();
+    }
+
+    // Initial load
+    fetchTodos();
+  </script>
+</body>
+</html>
